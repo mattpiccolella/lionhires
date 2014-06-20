@@ -202,6 +202,7 @@ THIRD_PARTY_APPS = (
 )
 
 LOCAL_APPS = (
+    'lionhires.apps.jobs',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
