@@ -27,7 +27,6 @@ anyjson==0.3.3
 apt-xapian-index==0.44
 argparse==1.2.1
 billiard==2.7.3.34
-boto==2.2.2
 celery==3.0.24
 chardet==2.0.1
 cloud-init==0.6.3
