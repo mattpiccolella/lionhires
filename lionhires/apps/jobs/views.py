@@ -1,15 +1,34 @@
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from linkedin import linkedin
+from models import LinkedInUser
 
 LINKED_IN_API_KEY = '77xwhoqz5szdvj'
 LINKED_IN_SECRET = 'C2bnhwPZIKMTFIby'
 
 def home(request):
-  data = request.GET.copy();
+  data = request.GET.copy()
+  session = request.session
   if 'code' in data:
-    return HttpResponse("Redirect works!")
+    request.session['auth_code'] = data['code']
+    authentication = session['auth']
+    authentication_code = data['code']
+    authentication.authorization_code = authentication_code
+    user_token = authentication.get_access_token()
+    application = linkedin.LinkedInApplication(token=user_token)
+    request.session['application'] = application
+    user_data = application.get_profile(selectors = ['id', 'first-name', 'last-name'])
+    if (len(LinkedInUser.objects.filter(linked_in_id = user_data['id'])) == 0):
+      l = LinkedInUser.create(id = user_data['id'], first = user_data['firstName'], last = user_data['lastName'])
+      l.save()
+    return redirect("/profile/")
   else:
-    authentication = linkedin.LinkedInAuthorization(API_KEY, API_SECRET, request.build_absolute_uri(), linkedin.PERMISSIONS.enums.values())
-    return HttpResponse(authentication.authorization_url)    
+    authentication = linkedin.LinkedInAuthentication(LINKED_IN_API_KEY, LINKED_IN_SECRET, request.build_absolute_uri(), linkedin.PERMISSIONS.enums.values())
+    request.session['auth'] = authentication
+    return render_to_response('index.html', {'auth':authentication.authorization_url})
+
+def profile(request):
+  application = request.session['application']
+  profile = application.get_profile()
+  return HttpResponse(profile['firstName'])
     
