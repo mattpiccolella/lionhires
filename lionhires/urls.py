@@ -12,5 +12,6 @@ urlpatterns = patterns('',
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'lionhires.apps.jobs.views.home', name='home'),
-    url(r'profile/', 'lionhires.apps.jobs.views.profile', name='profile')
+    url(r'^profile/', 'lionhires.apps.jobs.views.profile', name='profile'),
+    url(r'^logout/', 'lionhires.apps.jobs.views.logout', name='logout')
 )

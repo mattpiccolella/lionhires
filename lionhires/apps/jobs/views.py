@@ -28,7 +28,16 @@ def home(request):
     return render_to_response('index.html', {'auth':authentication.authorization_url})
 
 def profile(request):
-  application = request.session['application']
-  profile = application.get_profile()
-  return HttpResponse(profile['firstName'])
+  session = request.session
+  if 'application' in session:
+    application = session['application']
+    profile = application.get_profile(selectors = ['first-name', 'last-name', 'picture-url'])
+    c = {'first': profile['firstName'], 'last': profile['lastName'], 'photo': profile['pictureUrl']}
+    return render_to_response('profile.html', c)
+  else:
+    return redirect('/')
+
+def logout(request):
+  del request.session['application']
+  return redirect('/')
     
