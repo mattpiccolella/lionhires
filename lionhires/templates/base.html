@@ -20,9 +20,25 @@
     {% endcompress %}
   </head>
   <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <!-- retina.js for responsiveness -->
+          {% block navbar_title %}{% endblock %}
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav navbar-right">
+            {% block navbar_links %}{% endblock %}
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container -->
+    </nav>
     {% block body %}{% endblock %}
     <script src="{{ STATIC_URL}}js/jquery-1.10.2.js"></script>
     <script src="{{ STATIC_URL}}js/bootstrap.js"></script>
-    <script src="{{ STATIC_URL}}js/modern-business.js"></script>
+    <script src="{{ STATIC_URL}}js/homestyle.js"></script>
   </body>
 </html>

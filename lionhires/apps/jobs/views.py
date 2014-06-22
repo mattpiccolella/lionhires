@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
+from django.template import RequestContext
 from linkedin import linkedin
 from models import LinkedInUser
 
@@ -25,15 +26,17 @@ def home(request):
   else:
     authentication = linkedin.LinkedInAuthentication(LINKED_IN_API_KEY, LINKED_IN_SECRET, request.build_absolute_uri(), linkedin.PERMISSIONS.enums.values())
     request.session['auth'] = authentication
-    return render_to_response('index.html', {'auth':authentication.authorization_url})
+    return render_to_response('index.html', {'auth':authentication.authorization_url},
+      context_instance=RequestContext(request))
 
 def profile(request):
   session = request.session
   if 'application' in session:
     application = session['application']
-    profile = application.get_profile(selectors = ['first-name', 'last-name', 'picture-url'])
-    c = {'first': profile['firstName'], 'last': profile['lastName'], 'photo': profile['pictureUrl']}
-    return render_to_response('profile.html', c)
+    profile = application.get_profile(selectors = ['first-name', 'last-name', 'picture-url', 'headline'])
+    c = {'first': profile['firstName'], 'last': profile['lastName'], 'photo': profile['pictureUrl'], 'headline':
+      profile['headline']}
+    return render_to_response('profile.html', c, context_instance=RequestContext(request))
   else:
     return redirect('/')
 
